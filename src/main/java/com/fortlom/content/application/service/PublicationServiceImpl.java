@@ -34,7 +34,7 @@ public class PublicationServiceImpl implements PublicationService {
 
         List<Opinion> opinions =publicationRepository.findAll();
         for (Opinion opinion : opinions){
-            Artist artist= restTemplate.getForObject("https://fortlom-account.herokuapp.com/api/v1/userservice/artists/"+ opinion.getArtistid(),Artist.class);
+            Artist artist= restTemplate.getForObject("http://localhost:8081/api/v1/userservice/artists/"+ opinion.getArtistid(),Artist.class);
             opinion.setArtist(artist);
         }
         return opinions;
@@ -48,7 +48,7 @@ public class PublicationServiceImpl implements PublicationService {
 
         Page<Opinion>publications=publicationRepository.findAll(pageable);
         for (Opinion opinion :publications){
-            Artist artist= restTemplate.getForObject("https://fortlom-account.herokuapp.com/api/v1/userservice/artists/"+ opinion.getArtistid(),Artist.class);
+            Artist artist= restTemplate.getForObject("http://localhost:8081/api/v1/userservice/artists/"+ opinion.getArtistid(),Artist.class);
             opinion.setArtist(artist);
         }
 
@@ -63,14 +63,14 @@ public class PublicationServiceImpl implements PublicationService {
     public Opinion getById(Long publicationId) {
 
         Opinion opinion =publicationRepository.findById(publicationId).orElseThrow(() -> new ResourceNotFoundException(ENTITY, publicationId));
-        Artist artist= restTemplate.getForObject("https://fortlom-account.herokuapp.com/api/v1/userservice/artists/"+ opinion.getArtistid(),Artist.class);
+        Artist artist= restTemplate.getForObject("http://localhost:8081/api/v1/userservice/artists/"+ opinion.getArtistid(),Artist.class);
         opinion.setArtist(artist);
         return opinion;
     }
 
     @Override
     public Opinion create(Long artistId, Opinion request, String type) {
-        boolean check= restTemplate.getForObject("https://fortlom-account.herokuapp.com/api/v1/userservice/artists/check/"+artistId,boolean.class);
+        boolean check= restTemplate.getForObject("http://localhost:8081/api/v1/userservice/artists/check/"+artistId,boolean.class);
         if(check){
 
             Date date = new Date();
@@ -102,11 +102,11 @@ public class PublicationServiceImpl implements PublicationService {
 
     @Override
     public List<Opinion> getPublicationByArtistId(Long artistId) {
-        boolean check= restTemplate.getForObject("https://fortlom-account.herokuapp.com/api/v1/userservice/artists/check/"+artistId,boolean.class);
+        boolean check= restTemplate.getForObject("http://localhost:8081/api/v1/userservice/artists/check/"+artistId,boolean.class);
         if(check){
             List<Opinion> opinions =publicationRepository.findByArtistid(artistId);
             for (Opinion opinion : opinions){
-                Artist artist= restTemplate.getForObject("https://fortlom-account.herokuapp.com/api/v1/userservice/artists/"+ opinion.getArtistid(),Artist.class);
+                Artist artist= restTemplate.getForObject("http://localhost:8081/api/v1/userservice/artists/"+ opinion.getArtistid(),Artist.class);
                 opinion.setArtist(artist);
             }
             return opinions;}
