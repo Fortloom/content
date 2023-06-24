@@ -11,5 +11,6 @@ public class CreateEventResource {
     private String description;
     private Date releasedDate;
     private String ticketLink;
-    private String publicationId;
+    private Long publicationId;
+    private Long artistId;
 }

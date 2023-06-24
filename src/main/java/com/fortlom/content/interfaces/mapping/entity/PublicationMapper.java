@@ -1,5 +1,4 @@
 package com.fortlom.content.interfaces.mapping.entity;
-import com.fortlom.content.domain.ContentAgrregate.entity.Opinion;
 import com.fortlom.content.domain.ContentAgrregate.entity.Publication;
 import com.fortlom.content.interfaces.dto.publication.CreatePublicationResource;
 import com.fortlom.content.interfaces.dto.publication.PublicationResource;

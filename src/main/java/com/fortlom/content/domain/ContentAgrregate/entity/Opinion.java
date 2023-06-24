@@ -16,10 +16,21 @@ import javax.validation.constraints.NotNull;
 @Table(name="opinions")
 //@PrimaryKeyJoinColumn(referencedColumnName = "id")
 public class Opinion {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
     private Boolean isAgree;
 
     @NotNull
-    private Long publicationId;
+    private Long fanaticId;
 
+    private Long publicationId;
+    @Transient
+    private Publication publication;
+
+    private Long eventId;
+    @Transient
+    private Event event;
 
 }

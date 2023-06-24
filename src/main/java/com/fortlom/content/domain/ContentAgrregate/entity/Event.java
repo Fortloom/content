@@ -1,4 +1,5 @@
 package com.fortlom.content.domain.ContentAgrregate.entity;
+import com.fortlom.content.domain.ContentAgrregate.valueobject.Artist;
 import lombok.*;
 
 import javax.persistence.*;
@@ -42,6 +43,12 @@ public class Event {
 
     @Transient
     private Publication publication;
+
+    @NotNull
+    private Long artistId;
+
+    @Transient
+    private Artist artist;
 
     //@NotNull
     //@NotBlank

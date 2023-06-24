@@ -1,6 +1,7 @@
 package com.fortlom.content.interfaces.mapping.configuration;
 
 import com.fortlom.content.interfaces.mapping.entity.EventMapper;
+import com.fortlom.content.interfaces.mapping.entity.OpinionMapper;
 import com.fortlom.content.interfaces.mapping.entity.PublicationMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,5 +19,9 @@ public class MappingConfiguration {
     @Bean
     public PublicationMapper PublicationMapper() {
         return new PublicationMapper();
+    }
+    @Bean
+    public OpinionMapper opinionMapper() {
+        return new OpinionMapper();
     }
 }
