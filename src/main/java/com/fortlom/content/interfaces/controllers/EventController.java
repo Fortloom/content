@@ -22,7 +22,7 @@ import java.util.Date;
 
 @RestController
 @CrossOrigin
-@RequestMapping("/api/v1/contentservice")
+@RequestMapping("/api/v1/content-service")
 public class EventController {
     @Autowired
     private EventService eventService;
@@ -44,10 +44,8 @@ public class EventController {
 
     @GetMapping("/artist/{artistId}/events")
     public ResponseEntity<Page<EventResource>> getAllEventsByArtistId(@PathVariable Long artistId,Pageable pageable) {
-
         return ResponseEntity.ok(mapper.modelListToPage(eventService.getEventsByArtistId(artistId), pageable));
     }
-
 
     @PostMapping("/artist/{artistId}/events")
     public ResponseEntity<EventResource> createEvent(@PathVariable Long artistId,@RequestBody CreateEventResource request) {
@@ -60,14 +58,14 @@ public class EventController {
         return eventService.deleteEvent(eventId);
     }
 
-    @PutMapping("/eventupdatereleseadedate/{eventId}/releasedate/{releasedate}")
-    public EventResource updateEventreleaseddate(@PathVariable Long eventId,@PathVariable String releasedate) throws ParseException {
-        SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
-        Date dataFormateada = format.parse(releasedate);
-        return mapper.toResource(eventService.updateEventreleasedate(eventId,dataFormateada));
+    @PutMapping("/event/{eventId}")
+    public EventResource updateEvent(@PathVariable Long eventId,@RequestBody CreateEventResource request) throws ParseException {
+        //SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
+        //Date dataFormateada = format.parse(releasedate);
+        return mapper.toResource(eventService.updateEvent(eventId, request));
     }
     @GetMapping("events/check/{eventId}")
-    public boolean existspublication(@PathVariable("eventId") Long eventId){
+    public boolean existsPublication(@PathVariable("eventId") Long eventId){
         return eventService.existsById(eventId);
     }
 

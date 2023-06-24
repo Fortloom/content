@@ -14,8 +14,8 @@ import javax.validation.constraints.NotNull;
 @With
 @AllArgsConstructor
 @Table(name="opinions")
-@PrimaryKeyJoinColumn(referencedColumnName = "id")
-public class Opinion extends Publication {
+//@PrimaryKeyJoinColumn(referencedColumnName = "id")
+public class Opinion {
     private Boolean isAgree;
 
     @NotNull

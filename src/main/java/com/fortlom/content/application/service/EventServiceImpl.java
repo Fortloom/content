@@ -2,9 +2,12 @@ package com.fortlom.content.application.service;
 import com.fortlom.content.application.exception.ResourceNotFoundException;
 import com.fortlom.content.application.exception.ResourcePerzonalized;
 import com.fortlom.content.domain.ContentAgrregate.entity.Event;
+import com.fortlom.content.domain.ContentAgrregate.entity.Publication;
 import com.fortlom.content.domain.ContentAgrregate.repository.EventRepository;
+import com.fortlom.content.domain.ContentAgrregate.repository.PublicationRepository;
 import com.fortlom.content.domain.ContentAgrregate.service.EventService;
 import com.fortlom.content.domain.ContentAgrregate.valueobject.Artist;
+import com.fortlom.content.interfaces.dto.event.CreateEventResource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,50 +25,45 @@ public class EventServiceImpl implements EventService {
     @Autowired
     private EventRepository eventRepository;
     @Autowired
+    private PublicationRepository publicationRepository;
+    @Autowired
     private RestTemplate restTemplate;
 
     @Override
     public List<Event> getAllEvents() {
         List<Event>events=eventRepository.findAll();
         for (Event event:events){
-            Artist artist= restTemplate.getForObject("http://localhost:8081/api/v1/userservice/artists/"+event.getArtistid(),Artist.class);
-            event.setArtist(artist);
+            Publication publication = restTemplate.getForObject("http://localhost:8082/api/v1/content-service/publications/"+event.getPublicationId(), Publication.class);
+            event.setPublication(publication);
         }
         return events;
-
-
     }
 
     @Override
     public Page<Event> getAllEvents(Pageable pageable) {
-
         Page<Event>events=eventRepository.findAll(pageable);
         for (Event event:events){
-             Artist artist= restTemplate.getForObject("http://localhost:8081/api/v1/userservice/artists/"+event.getArtistid(),Artist.class);
-             event.setArtist(artist);
+            Long publicationId = event.getPublicationId();
+            Publication publication = publicationRepository.findById(publicationId).orElseThrow(() -> new ResourceNotFoundException(ENTITY, publicationId));
+            //Publication publication = restTemplate.getForObject("http://localhost:8082/api/v1/content-service/publications/"+event.getPublicationId(), Publication.class);
+            event.setPublication(publication);
         }
-
         return events;
     }
 
     @Override
     public Event getEventById(Long eventId) {
         Event event=eventRepository.findById(eventId).orElseThrow(() -> new ResourceNotFoundException(ENTITY, eventId));
-        Artist artist= restTemplate.getForObject("http://localhost:8081/api/v1/userservice/artists/"+event.getArtistid(),Artist.class);
-        event.setArtist(artist);
+        Publication publication = restTemplate.getForObject("http://localhost:8082/api/v1/content-service/publications/"+event.getPublicationId(), Publication.class);
+        event.setPublication(publication);
         return event;
     }
 
     @Override
-    public Event createEvent(Long Artist, Event request) {
-        boolean check= restTemplate.getForObject("http://localhost:8081/api/v1/userservice/artists/check/"+Artist,boolean.class);
-        boolean check2= restTemplate.getForObject("http://localhost:8081/api/v1/userservice/artists/checkpremium/"+Artist,boolean.class);
-        if(check && check2){
-            request.setArtistid(Artist);
-            Date date = new Date();
-            request.setRegisterdate(date);
-
-
+    public Event createEvent(Long artistId, Event request) {
+        boolean ExistsArtist = restTemplate.getForObject("http://localhost:8081/api/v1/user-service/artists/check/" + artistId, boolean.class);
+        boolean ArtistIsPremium = restTemplate.getForObject("http://localhost:8081/api/v1/user-service/artists/checkpremium/" + artistId, boolean.class);
+        if(ExistsArtist && ArtistIsPremium){
             return eventRepository.save(request);
         }else{
             throw  new ResourcePerzonalized("id inexistente");
@@ -73,9 +71,11 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public Event updateEventreleasedate(Long eventId, Date releasedDate) {
+    public Event updateEvent(Long eventId, CreateEventResource request) {
         return eventRepository.findById(eventId).map(post->{
-            post.setReleasedDate(releasedDate);
+            post.setName(request.getName());
+            post.setDescription(request.getDescription());
+            post.setReleasedDate(request.getReleasedDate());
             eventRepository.save(post);
             return  post;
         }).orElseThrow(() -> new ResourceNotFoundException(ENTITY, eventId));
@@ -83,20 +83,17 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public List<Event> getEventsByArtistId(Long artistId) {
-        boolean check= restTemplate.getForObject("http://localhost:8081/api/v1/userservice/artists/check/"+artistId,boolean.class);
-        if(check){
-            List<Event>events=eventRepository.findByArtistid(artistId);
+        boolean ExistsArtist = restTemplate.getForObject("http://localhost:8081/api/v1/user-service/artists/check/"+artistId,boolean.class);
+        if(ExistsArtist){
+            List<Event>events=eventRepository.findByArtistId(artistId);
             for (Event event:events){
-                Artist artist= restTemplate.getForObject("http://localhost:8081/api/v1/userservice/artists/"+event.getArtistid(),Artist.class);
-                event.setArtist(artist);
+                Publication publication = restTemplate.getForObject("http://localhost:8082/api/v1/content-service/publications/"+event.getPublicationId(), Publication.class);
+                event.setPublication(publication);
             }
-
             return events;
-
         }
         else {
-            throw  new ResourcePerzonalized("id inexistente");
-
+            throw  new ResourcePerzonalized("Artist Id was not found");
         }
     }
 

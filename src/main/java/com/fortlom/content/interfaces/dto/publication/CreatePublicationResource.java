@@ -8,4 +8,5 @@ import java.util.Date;
 @Setter
 public class CreatePublicationResource {
     private String description;
+    private Long artistId;
 }

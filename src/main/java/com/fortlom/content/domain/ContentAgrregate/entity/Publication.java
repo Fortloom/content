@@ -9,16 +9,14 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.Date;
 
-@NoArgsConstructor
 @Getter
 @Setter
 @Entity
 @With
+@NoArgsConstructor
 @AllArgsConstructor
 @Table(name="publications")
-@Inheritance(strategy = InheritanceType.JOINED)
 public class Publication {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -28,13 +26,16 @@ public class Publication {
     @Size(max = 200)
     private String description;
 
-    private Boolean image;
+    //private Boolean image;
 
     @Temporal(TemporalType.DATE)
-    private Date registerdate;
+    private Date registerDate;
 
     @NotNull
-    private Long artistid;
+    private Long artistId;
+
+    //TODO: Implement
+    //private Long eventId;
 
     @Transient
     private Artist artist;

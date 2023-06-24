@@ -1,5 +1,5 @@
 package com.fortlom.content.interfaces.controllers;
-import com.fortlom.content.domain.ContentAgrregate.entity.Opinion;
+import com.fortlom.content.domain.ContentAgrregate.entity.Publication;
 import com.fortlom.content.domain.ContentAgrregate.service.PublicationService;
 import com.fortlom.content.interfaces.dto.publication.CreatePublicationResource;
 import com.fortlom.content.interfaces.dto.publication.PublicationResource;
@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @CrossOrigin
-@RequestMapping("/api/v1/contentservice")
+@RequestMapping("/api/v1/content-service")
 public class PublicationController {
     @Autowired
     private PublicationService publicationService;
@@ -34,10 +34,11 @@ public class PublicationController {
     public PublicationResource getPublicationById(@PathVariable("publicationId") Long publicationId) {
         return mapper.toResource(publicationService.getById(publicationId));
     }
-    @PostMapping("/artists/{artistId}/type/{type}/publications")
-    public ResponseEntity<PublicationResource> createPublication(@PathVariable Long artistId,@PathVariable String type,@RequestBody CreatePublicationResource request) {
-        Opinion opinion = mapping.map(request, Opinion.class);
-        return ResponseEntity.ok(mapping.map(publicationService.create(artistId, opinion,type), PublicationResource.class));
+
+    @PostMapping("/artists/{artistId}/publications")
+    public ResponseEntity<PublicationResource> createPublication(@PathVariable Long artistId, @RequestBody CreatePublicationResource request) {
+        Publication publication = mapping.map(request, Publication.class);
+        return ResponseEntity.ok(mapping.map(publicationService.create(artistId, publication), PublicationResource.class));
     }
     @DeleteMapping("/publications/{publicationId}")
     public ResponseEntity<?> deletePublication(@PathVariable Long publicationId) {
@@ -49,7 +50,7 @@ public class PublicationController {
         return ResponseEntity.ok(mapper.modelListToPage(publicationService.getPublicationByArtistId(artistId), pageable));
     }
     @GetMapping("publications/check/{publicationId}")
-    public boolean existspublication(@PathVariable("publicationId") Long publicationId){
-        return publicationService.existspublication(publicationId);
+    public boolean existsPublication(@PathVariable("publicationId") Long publicationId){
+        return publicationService.existsPublication(publicationId);
     }
 }

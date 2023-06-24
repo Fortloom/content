@@ -1,5 +1,6 @@
 package com.fortlom.content.interfaces.mapping.entity;
 import com.fortlom.content.domain.ContentAgrregate.entity.Opinion;
+import com.fortlom.content.domain.ContentAgrregate.entity.Publication;
 import com.fortlom.content.interfaces.dto.publication.CreatePublicationResource;
 import com.fortlom.content.interfaces.dto.publication.PublicationResource;
 import com.fortlom.content.interfaces.mapping.configuration.EnhancedModelMapper;
@@ -13,16 +14,16 @@ public class PublicationMapper implements Serializable{
     @Autowired
     EnhancedModelMapper mapper;
 
-    public PublicationResource toResource(Opinion model) {
+    public PublicationResource toResource(Publication model) {
         return mapper.map(model, PublicationResource.class);
     }
 
-    public Page<PublicationResource> modelListToPage(List<Opinion> modelList, Pageable pageable) {
+    public Page<PublicationResource> modelListToPage(List<Publication> modelList, Pageable pageable) {
         return new PageImpl<>(mapper.mapList(modelList, PublicationResource.class), pageable, modelList.size());
     }
-    public Opinion toModel(CreatePublicationResource resource) {
+    public Publication toModel(CreatePublicationResource resource) {
 
-        return mapper.map(resource, Opinion.class);
+        return mapper.map(resource, Publication.class);
     }
 
 }

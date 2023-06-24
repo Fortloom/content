@@ -4,6 +4,7 @@ import com.fortlom.content.application.exception.ResourcePerzonalized;
 
 
 import com.fortlom.content.domain.ContentAgrregate.entity.Opinion;
+import com.fortlom.content.domain.ContentAgrregate.entity.Publication;
 import com.fortlom.content.domain.ContentAgrregate.repository.PublicationRepository;
 import com.fortlom.content.domain.ContentAgrregate.service.PublicationService;
 import com.fortlom.content.domain.ContentAgrregate.valueobject.Artist;
@@ -29,91 +30,73 @@ public class PublicationServiceImpl implements PublicationService {
     private PublicationRepository publicationRepository;
 
     @Override
-    public List<Opinion> getAll() {
-
-
-        List<Opinion> opinions =publicationRepository.findAll();
-        for (Opinion opinion : opinions){
-            Artist artist= restTemplate.getForObject("http://localhost:8081/api/v1/userservice/artists/"+ opinion.getArtistid(),Artist.class);
-            opinion.setArtist(artist);
+    public List<Publication> getAll() {
+        List<Publication> publications = publicationRepository.findAll();
+        for (Publication publication : publications){
+            Artist artist= restTemplate.getForObject("http://localhost:8081/api/v1/user-service/artists/"+ publication.getArtistId(),Artist.class);
+            publication.setArtist(artist);
         }
-        return opinions;
-
-
-    }
-
-    @Override
-    public Page<Opinion> getAll(Pageable pageable) {
-
-
-        Page<Opinion>publications=publicationRepository.findAll(pageable);
-        for (Opinion opinion :publications){
-            Artist artist= restTemplate.getForObject("http://localhost:8081/api/v1/userservice/artists/"+ opinion.getArtistid(),Artist.class);
-            opinion.setArtist(artist);
-        }
-
-
-
         return publications;
-
-
     }
 
     @Override
-    public Opinion getById(Long publicationId) {
-
-        Opinion opinion =publicationRepository.findById(publicationId).orElseThrow(() -> new ResourceNotFoundException(ENTITY, publicationId));
-        Artist artist= restTemplate.getForObject("http://localhost:8081/api/v1/userservice/artists/"+ opinion.getArtistid(),Artist.class);
-        opinion.setArtist(artist);
-        return opinion;
+    public Page<Publication> getAll(Pageable pageable) {
+        Page<Publication> publications = publicationRepository.findAll(pageable);
+        for (Publication publication : publications){
+            Artist artist= restTemplate.getForObject("http://localhost:8081/api/v1/user-service/artists/"+ publication.getArtistId(),Artist.class);
+            publication.setArtist(artist);
+        }
+        return publications;
     }
 
     @Override
-    public Opinion create(Long artistId, Opinion request, String type) {
+    public Publication getById(Long publicationId) {
+        Publication publication =publicationRepository.findById(publicationId).orElseThrow(() -> new ResourceNotFoundException(ENTITY, publicationId));
+        Artist artist= restTemplate.getForObject("http://localhost:8081/api/v1/user-service/artists/"+ publication.getArtistId(),Artist.class);
+        publication.setArtist(artist);
+        return publication;
+    }
+
+    @Override
+    public Publication create(Long artistId, Publication request) {
         boolean check= restTemplate.getForObject("http://localhost:8081/api/v1/userservice/artists/check/"+artistId,boolean.class);
         if(check){
-
             Date date = new Date();
-            request.setArtistid(artistId);
-            request.setRegisterdate(date);
-            if(type.equals("true")){
-                request.setImage(true);
-            }else {
-                request.setImage(false);
-            }
-
-
+            request.setArtistId(artistId);
+            request.setRegisterDate(date);
+            //if(type.equals("true")){
+            //    request.setImage(true);
+            //}else {
+            //    request.setImage(false);
+            //}
             return publicationRepository.save(request);
         }else {
-            throw  new ResourcePerzonalized("id inexistente");
+            throw  new ResourcePerzonalized("Artist id was not found");
         }
     }
 
     @Override
-    public Opinion update(Long publicationId, Opinion request) {
+    public Publication update(Long publicationId, Publication request) {
         return publicationRepository.findById(publicationId).map(post->{
-
-
+            post.setDescription(request.getDescription());
             publicationRepository.save(post);
             return post;
-
         }).orElseThrow(() -> new ResourceNotFoundException(ENTITY, publicationId));
     }
 
     @Override
-    public List<Opinion> getPublicationByArtistId(Long artistId) {
+    public List<Publication> getPublicationByArtistId(Long artistId) {
         boolean check= restTemplate.getForObject("http://localhost:8081/api/v1/userservice/artists/check/"+artistId,boolean.class);
         if(check){
-            List<Opinion> opinions =publicationRepository.findByArtistid(artistId);
-            for (Opinion opinion : opinions){
-                Artist artist= restTemplate.getForObject("http://localhost:8081/api/v1/userservice/artists/"+ opinion.getArtistid(),Artist.class);
-                opinion.setArtist(artist);
+            List<Publication> publications =publicationRepository.findByArtistId(artistId);
+            for (Publication publication : publications){
+                Artist artist= restTemplate.getForObject("http://localhost:8081/api/v1/userservice/artists/"+ publication.getArtistId(),Artist.class);
+                publication.setArtist(artist);
             }
-            return opinions;}
+            return publications;
+        }
         else {
-            throw  new ResourcePerzonalized("id inexistente");
-
-
+            throw  new ResourcePerzonalized("Artist id was not found");
         }
     }
 
@@ -127,7 +110,7 @@ public class PublicationServiceImpl implements PublicationService {
 
 
     @Override
-    public boolean existspublication(Long publicationId) {
+    public boolean existsPublication(Long publicationId) {
         return publicationRepository.existsById(publicationId);
     }
 }
