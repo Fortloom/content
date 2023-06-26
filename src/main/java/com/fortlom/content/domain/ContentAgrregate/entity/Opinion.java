@@ -20,6 +20,7 @@ public class Opinion {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(columnDefinition = "boolean default true")
     private Boolean isAgree;
 
     @NotNull

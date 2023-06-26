@@ -10,7 +10,9 @@ import java.util.Optional;
 @Repository
 public interface OpinionRepository extends JpaRepository<Opinion, Long> {
     Long countByPublicationId(Long publicationId);
+    Long countByPublicationIdAndIsAgree(Long publicationId, Boolean isAgree);
     Long countByEventId(Long eventId);
+    Long countByEventIdAndIsAgree(Long eventId, Boolean isAgree);
     Optional<Opinion> findByPublicationIdAndFanaticId(Long publicationId, @NotNull Long fanaticId);
     Optional<Opinion> findByEventIdAndFanaticId(Long eventId, @NotNull Long fanaticId);
 }

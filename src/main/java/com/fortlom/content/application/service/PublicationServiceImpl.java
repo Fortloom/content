@@ -59,7 +59,7 @@ public class PublicationServiceImpl implements PublicationService {
 
     @Override
     public Publication create(Long artistId, Publication request) {
-        boolean check= restTemplate.getForObject("http://localhost:8081/api/v1/userservice/artists/check/"+artistId,boolean.class);
+        boolean check= restTemplate.getForObject("http://localhost:8081/api/v1/user-service/artists/check/"+artistId,boolean.class);
         if(check){
             Date date = new Date();
             request.setArtistId(artistId);
@@ -86,11 +86,11 @@ public class PublicationServiceImpl implements PublicationService {
 
     @Override
     public List<Publication> getPublicationByArtistId(Long artistId) {
-        boolean check= restTemplate.getForObject("http://localhost:8081/api/v1/userservice/artists/check/"+artistId,boolean.class);
+        boolean check= restTemplate.getForObject("http://localhost:8081/api/v1/user-service/artists/check/"+artistId,boolean.class);
         if(check){
             List<Publication> publications =publicationRepository.findByArtistId(artistId);
             for (Publication publication : publications){
-                Artist artist= restTemplate.getForObject("http://localhost:8081/api/v1/userservice/artists/"+ publication.getArtistId(),Artist.class);
+                Artist artist= restTemplate.getForObject("http://localhost:8081/api/v1/user-service/artists/"+ publication.getArtistId(),Artist.class);
                 publication.setArtist(artist);
             }
             return publications;

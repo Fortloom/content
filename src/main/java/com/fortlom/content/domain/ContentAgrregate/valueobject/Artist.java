@@ -18,6 +18,7 @@ public class Artist {
     private String email;
 
     private String password;
+
     private Long artistfollowers;
 
     private String instagramLink;
@@ -25,4 +26,6 @@ public class Artist {
     private String facebookLink;
 
     private String twitterLink;
+
+    private String aboutMe;
 }

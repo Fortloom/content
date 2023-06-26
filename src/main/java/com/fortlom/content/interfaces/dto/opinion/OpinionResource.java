@@ -7,7 +7,7 @@ import lombok.Setter;
 @Setter
 public class OpinionResource {
     private Long id;
-    private boolean isAgree;
+    private Boolean isAgree;
     private Long fanaticId;
     private Long eventId;
     private Long publicationId;

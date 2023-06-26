@@ -6,6 +6,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class CreateOpinionResource {
-    private boolean isAgree;
+    private Boolean isAgree;
     //private Long fanaticId;
 }

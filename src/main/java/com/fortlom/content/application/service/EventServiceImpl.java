@@ -62,14 +62,19 @@ public class EventServiceImpl implements EventService {
     @Override
     public Event createEvent(Long artistId, Event request) {
         boolean ExistsArtist = restTemplate.getForObject("http://localhost:8081/api/v1/user-service/artists/check/" + artistId, boolean.class);
-        boolean ArtistIsPremium = restTemplate.getForObject("http://localhost:8081/api/v1/user-service/artists/checkpremium/" + artistId, boolean.class);
-        if(ExistsArtist && ArtistIsPremium){
-            Artist artist= restTemplate.getForObject("http://localhost:8081/api/v1/user-service/artists/"+ artistId,Artist.class);
-            request.setArtistId(artistId);
-            return eventRepository.save(request);
-        }else{
-            throw  new ResourcePerzonalized("id inexistente");
+        if (!ExistsArtist){
+            throw  new ResourcePerzonalized("Artist was not found");
         }
+
+        boolean ArtistIsPremium = restTemplate.getForObject("http://localhost:8081/api/v1/user-service/artists/checkpremium/" + artistId, boolean.class);
+        if (!ArtistIsPremium){
+            throw  new ResourcePerzonalized("Artist can't create an event. Upgrade account for publishing");
+        }
+
+        Artist artist= restTemplate.getForObject("http://localhost:8081/api/v1/user-service/artists/"+ artistId,Artist.class);
+        System.out.println(artist.getId());
+        request.setArtistId(artistId);
+        return eventRepository.save(request);
     }
 
     @Override

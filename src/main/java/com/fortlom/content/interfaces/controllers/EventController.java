@@ -7,6 +7,7 @@ import com.fortlom.content.interfaces.dto.event.CreateEventResource;
 import com.fortlom.content.interfaces.dto.event.EventResource;
 import com.fortlom.content.interfaces.mapping.entity.EventMapper;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -49,6 +50,7 @@ public class EventController {
 
     @PostMapping("/artist/{artistId}/events")
     public ResponseEntity<EventResource> createEvent(@PathVariable Long artistId,@RequestBody CreateEventResource request) {
+        mapping.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
         Event event = mapping.map(request, Event.class);
         return ResponseEntity.ok(mapping.map(eventService.createEvent(artistId, event), EventResource.class));
     }

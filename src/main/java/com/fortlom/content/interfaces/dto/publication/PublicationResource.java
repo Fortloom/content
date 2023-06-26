@@ -1,4 +1,5 @@
 package com.fortlom.content.interfaces.dto.publication;
+import com.fortlom.content.domain.ContentAgrregate.valueobject.Artist;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -12,5 +13,5 @@ public class PublicationResource {
     //private boolean image;
     private Date registerDate;
     private Long artistId;
-    //private Artist artist;
+    private Artist artist;
 }

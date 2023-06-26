@@ -36,7 +36,9 @@ public class OpinionServiceImpl implements OpinionService {
     @Override
     public Long getPublicationOpinionCount(Long publicationId) {
         if (existsPublication(publicationId)){
-            return opinionRepository.countByPublicationId(publicationId);
+            Long positiveOpinionCount = opinionRepository.countByPublicationIdAndIsAgree(publicationId, true);
+            Long negativeOpinionCount = opinionRepository.countByPublicationIdAndIsAgree(publicationId, false);
+            return positiveOpinionCount - negativeOpinionCount;
         }
         else{
             throw new ResourcePerzonalized("Publication was not found");
@@ -46,7 +48,9 @@ public class OpinionServiceImpl implements OpinionService {
     @Override
     public Long getEventOpinionCount(Long eventId) {
         if (existsEvent(eventId)){
-            return opinionRepository.countByEventId(eventId);
+            Long positiveOpinionCount = opinionRepository.countByEventIdAndIsAgree(eventId, true);
+            Long negativeOpinionCount = opinionRepository.countByEventIdAndIsAgree(eventId, false);
+            return positiveOpinionCount - negativeOpinionCount;
         }
         else{
             throw new ResourcePerzonalized("Event was not found");
@@ -69,16 +73,18 @@ public class OpinionServiceImpl implements OpinionService {
 
     @Override
     public boolean getEventOpinionByFanatic(Long eventId, Long fanaticId) {
-        if (existsEvent(eventId) && existsFanatic(fanaticId)){
-            Optional<Opinion> opinion = opinionRepository.findByEventIdAndFanaticId(eventId, fanaticId);
-            if (opinion.isPresent()){
-                return opinion.get().getIsAgree();
-            }
-            return false;
+        if (!existsEvent(eventId)){
+            throw new ResourcePerzonalized("Event was not found");
         }
-        else{
-            throw new ResourcePerzonalized("Event or Fanatic were not found");
+        if (!existsFanatic(fanaticId)){
+            throw new ResourcePerzonalized("Fanatic was not found");
         }
+
+        Optional<Opinion> opinion = opinionRepository.findByEventIdAndFanaticId(eventId, fanaticId);
+        if (opinion.isPresent()){
+            return opinion.get().getIsAgree();
+        }
+        return false;
     }
 
     @Override
